@@ -1,4 +1,5 @@
 from main import BooksCollector
+import pytest
 
 # класс TestBooksCollector объединяет набор тестов, которыми мы покрываем наше приложение BooksCollector
 # обязательно указывать префикс Test
@@ -18,12 +19,12 @@ class TestBooksCollector:
 
         # проверяем, что добавилось именно две
         # словарь books_rating, который нам возвращает метод get_books_rating, имеет длину 2
-        assert len(collector.get_books_rating()) == 2
+        assert len(collector.get_books_genre()) == 2
 
     # напиши свои тесты ниже
     # чтобы тесты были независимыми в каждом из них создавай отдельный экземпляр класса BooksCollector()
-import pytest
-@pytest.mark.parametrize('book_name', ['Коллекционер', 'Уровень'])
+
+@pytest.mark.parametrize('book_name', ['К', 'КоллекционерКоллекционерКоллекционерКолл'])
 def test_add_new_book_add_new_book_to_collection(book_name):
     collector = BooksCollector()
     collector.add_new_book(book_name)
@@ -57,10 +58,8 @@ def test_get_book_genre_the_genre_corresponds_to_the_book():
                          )
 def test_get_books_with_specific_genre_getting_books_of_certain_genre(genre, book_name):
     collector = BooksCollector()
-    collector.add_new_book('Под куполом')
-    collector.set_book_genre('Под куполом', 'Ужасы')
-    collector.add_new_book('Уровень')
-    collector.set_book_genre('Уровень', 'Фантастика')
+    collector.add_new_book(book_name)
+    collector.set_book_genre(book_name, genre)
     assert collector.get_books_with_specific_genre(genre) == [book_name]
 
 
@@ -73,16 +72,19 @@ def test_get_books_genre_dictionary_output():
 
 
 
+def test_get_books_for_children_age_restricted_books():
+    collector = BooksCollector()
+    collector.add_new_book('Под куполом')
+    collector.set_book_genre('Под куполом', 'Ужасы')
+    books_for_children = collector.get_books_for_children()
+    assert 'Под куполом' not in books_for_children
+
 def test_get_books_for_children_books_has_no_age_restrictions():
     collector = BooksCollector()
     collector.add_new_book('Уровень')
     collector.set_book_genre('Уровень', 'Фантастика')
-    collector.add_new_book('Под куполом')
-    collector.set_book_genre('Под куполом', 'Ужасы')
     books_for_children = collector.get_books_for_children()
     assert 'Уровень' in books_for_children
-    assert 'Под куполом' not in books_for_children
-
 
 def test_add_book_in_favorites_the_book_is_in_favorites():
     collector = BooksCollector()
